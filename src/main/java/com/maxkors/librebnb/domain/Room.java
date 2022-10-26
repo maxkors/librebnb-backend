@@ -1,6 +1,10 @@
 package com.maxkors.librebnb.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.w3c.dom.stylesheets.LinkStyle;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Room {
@@ -22,22 +26,30 @@ public class Room {
     @Column(name = "longitude")
     private Double longitude;
 
+    @Column(name = "max_adults")
+    private Long max_adults;
+
+    @Column(name = "max_children")
+    private Long max_children;
+
+    @Column(name = "max_pets")
+    private Long max_pets;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Media> media;
+
     public Room() {
     }
 
-    public Room(String description, Long price, Double latitude, Double longitude) {
+    public Room(String description, Long price, Double latitude, Double longitude, Long max_adults, Long max_children, Long max_pets) {
         this.description = description;
         this.price = price;
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.max_adults = max_adults;
+        this.max_children = max_children;
+        this.max_pets = max_pets;
     }
 
     public String getDescription() {
@@ -70,5 +82,29 @@ public class Room {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public Long getMax_adults() {
+        return max_adults;
+    }
+
+    public void setMax_adults(Long max_adults) {
+        this.max_adults = max_adults;
+    }
+
+    public Long getMax_children() {
+        return max_children;
+    }
+
+    public void setMax_children(Long max_children) {
+        this.max_children = max_children;
+    }
+
+    public Long getMax_pets() {
+        return max_pets;
+    }
+
+    public void setMax_pets(Long max_pets) {
+        this.max_pets = max_pets;
     }
 }
