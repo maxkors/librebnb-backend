@@ -27,8 +27,8 @@ public class RoomController {
         return roomService.getAllRooms();
     }
 
-    //TODO  validation
-    //TODO limit quantity (pagination/SQL)
+    //TODO:  validation
+    //TODO: limit quantity (pagination/SQL)
     @GetMapping("/rooms")
     List<Room> getRoomsByCriteria(
             @RequestParam("ne_lat") Double NELat,
@@ -43,12 +43,13 @@ public class RoomController {
             @RequestParam("children") Optional<Integer> children,
             @RequestParam("pets") Optional<Integer> pets,
 
-            //TODO should be enum
+            //TODO: should be enum
             @RequestParam("amenities") Optional<List<String>> amenities
     ) {
         var boundingBox = new BoundingBox(NELat, NELng, SWLat, SWLng);
+        System.out.println(boundingBox);
         var roomSearchCriteria = new RoomSearchCriteria(boundingBox, adults, children, pets);
 
-        return null;
+        return roomService.getRoomsByCriteria(roomSearchCriteria);
     }
 }

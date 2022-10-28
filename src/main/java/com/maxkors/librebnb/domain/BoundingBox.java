@@ -45,4 +45,14 @@ public class BoundingBox {
     public void setSWLng(Double SWLng) {
         this.SWLng = SWLng;
     }
+
+    @Override
+    public String toString() {
+        return "BoundingBox{" +
+                "NELat=" + NELat +
+                ", NELng=" + NELng +
+                ", SWLat=" + SWLat +
+                ", SWLng=" + SWLng +
+                '}';
+    }
 }
