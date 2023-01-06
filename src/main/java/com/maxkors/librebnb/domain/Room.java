@@ -1,9 +1,8 @@
 package com.maxkors.librebnb.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.w3c.dom.stylesheets.LinkStyle;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Entity

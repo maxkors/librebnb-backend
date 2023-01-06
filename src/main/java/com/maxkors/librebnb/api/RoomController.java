@@ -30,22 +30,20 @@ public class RoomController {
     //TODO:  validation
     //TODO: limit quantity (pagination/SQL)
     @GetMapping("/rooms")
-    List<Room> getRoomsByCriteria(
-            @RequestParam("ne_lat") Double NELat,
-            @RequestParam("ne_lng") Double NELng,
-            @RequestParam("sw_lat") Double SWLat,
-            @RequestParam("sw_lng") Double SWLng,
+    List<Room> getRoomsByCriteria(@RequestParam("ne_lat") Double NELat,
+                                  @RequestParam("ne_lng") Double NELng,
+                                  @RequestParam("sw_lat") Double SWLat,
+                                  @RequestParam("sw_lng") Double SWLng,
 
-            @RequestParam("checkin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkin,
-            @RequestParam("checkout") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkout,
+                                  @RequestParam("checkin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkin,
+                                  @RequestParam("checkout") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkout,
 
-            @RequestParam("adults") Optional<Integer> adults,
-            @RequestParam("children") Optional<Integer> children,
-            @RequestParam("pets") Optional<Integer> pets,
+                                  @RequestParam("adults") Optional<Integer> adults,
+                                  @RequestParam("children") Optional<Integer> children,
+                                  @RequestParam("pets") Optional<Integer> pets,
 
-            //TODO: should be enum
-            @RequestParam("amenities") Optional<List<String>> amenities
-    ) {
+                                  //TODO: should be enum
+                                  @RequestParam("amenities") Optional<List<String>> amenities) {
         var boundingBox = new BoundingBox(NELat, NELng, SWLat, SWLng);
         System.out.println(boundingBox);
         var roomSearchCriteria = new RoomSearchCriteria(boundingBox, adults, children, pets);

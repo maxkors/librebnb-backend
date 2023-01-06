@@ -5,7 +5,7 @@ import com.maxkors.librebnb.domain.Room;
 import com.maxkors.librebnb.domain.RoomSearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.JoinType;
 import java.util.Optional;
 
 //TODO: add @StaticMetamodel for Room

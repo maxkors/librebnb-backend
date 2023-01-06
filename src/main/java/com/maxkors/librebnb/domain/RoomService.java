@@ -1,10 +1,10 @@
 package com.maxkors.librebnb.domain;
 
 import com.maxkors.librebnb.infrastructure.RoomRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
