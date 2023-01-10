@@ -1,20 +1,19 @@
 package com.maxkors.librebnb.security;
 
 import com.maxkors.librebnb.infrastructure.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -26,12 +25,32 @@ public class SecurityConfig {
 //                .csrf()
 //                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                    .and()
-                .csrf().disable()
-                .authorizeHttpRequests(customizer -> customizer
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers("/rooms-all").hasRole(RoleName.ROLE_ADMIN.value())
-                        .requestMatchers("/rooms").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/rooms").permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults());
+                .formLogin(configurer -> configurer
+                        .permitAll()
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .successHandler((req, res, auth) -> res.setStatus(HttpStatus.OK.value()))
+                        .failureHandler((req, res, ex) -> res.sendError(HttpStatus.UNAUTHORIZED.value())))
+//                .rememberMe(configurer -> configurer
+//                        .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
+//                        .tokenRepository()
+//                        .key("remember_me_secret_key"))
+                .logout(configurer -> configurer
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", HttpMethod.POST.name()))
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID", "remember-me")
+                        .logoutSuccessHandler((req, res, auth) -> res.setStatus(HttpStatus.UNAUTHORIZED.value())))
+                .exceptionHandling(configurer -> configurer
+                        .authenticationEntryPoint((req, res, authEx) -> res.sendError(HttpStatus.UNAUTHORIZED.value())))
+        ;
+
         return http.build();
     }
 
