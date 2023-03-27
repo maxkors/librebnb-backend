@@ -27,9 +27,9 @@ public class SecurityConfig {
 //                    .and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(configurer -> configurer
-                        .requestMatchers("/rooms-all").hasRole(RoleName.ROLE_ADMIN.value())
                         .requestMatchers(HttpMethod.GET, "/rooms").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/rooms-all").hasRole(RoleName.ROLE_ADMIN.value())
+                        .anyRequest().denyAll())
                 .formLogin(configurer -> configurer
                         .permitAll()
                         .loginProcessingUrl("/login")
@@ -42,6 +42,7 @@ public class SecurityConfig {
 //                        .tokenRepository()
 //                        .key("remember_me_secret_key"))
                 .logout(configurer -> configurer
+                        .permitAll()
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout", HttpMethod.POST.name()))
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
