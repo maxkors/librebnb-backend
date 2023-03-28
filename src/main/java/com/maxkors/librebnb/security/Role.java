@@ -1,5 +1,6 @@
 package com.maxkors.librebnb.security;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ public class Role {
     @Column(name = "name")
     private RoleName name;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 

@@ -1,5 +1,6 @@
 package com.maxkors.librebnb.security;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -25,6 +26,7 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(name = "app_user__role",
             joinColumns = @JoinColumn(name = "app_user_id"),

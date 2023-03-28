@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers(HttpMethod.GET, "/rooms").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/profile").authenticated()
                         .requestMatchers("/rooms-all").hasRole(RoleName.ROLE_ADMIN.value())
                         .anyRequest().denyAll())
                 .formLogin(configurer -> configurer
@@ -35,7 +36,10 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .successHandler((req, res, auth) -> res.setStatus(HttpStatus.OK.value()))
+                        .successHandler((req, res, auth) -> {
+                            res.setStatus(HttpStatus.OK.value());
+                            res.sendRedirect("/api/profile");
+                        })
                         .failureHandler((req, res, ex) -> res.sendError(HttpStatus.UNAUTHORIZED.value())))
 //                .rememberMe(configurer -> configurer
 //                        .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
