@@ -1,3 +1,4 @@
+drop table if exists wishlist;
 drop table if exists app_user__role;
 drop table if exists role;
 drop table if exists app_user;
@@ -48,6 +49,15 @@ create table app_user__role
     primary key (app_user_id, role_id)
 );
 
+create table favourite
+(
+    app_user_id int not null,
+    room_id     int not null,
+    foreign key (app_user_id) references app_user (id),
+    foreign key (room_id) references room (id),
+    primary key (app_user_id, room_id)
+);
+
 insert into room(description, price, longitude, latitude, max_adults, max_children, max_pets)
 values ('Modern studio', 109, -122.4, 37.68, 2, 1, 0),
        ('Entire apartment', 135, -122.42, 37.66, 3, 1, 1),
@@ -90,3 +100,9 @@ values ('ROLE_ADMIN'),
 insert into app_user__role(app_user_id, role_id)
 values (1, 1),
        (2, 2);
+
+insert into favourite (app_user_id, room_id)
+values (1, 2),
+       (1, 3),
+       (2, 4),
+       (2, 5);
