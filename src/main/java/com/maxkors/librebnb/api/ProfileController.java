@@ -1,7 +1,7 @@
 package com.maxkors.librebnb.api;
 
-import com.maxkors.librebnb.infrastructure.UserRepository;
-import jakarta.transaction.Transactional;
+import com.maxkors.librebnb.domain.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/profile")
 public class ProfileController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ProfileController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    @Autowired
+    public ProfileController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    @Transactional
-    Profile getProfile(@AuthenticationPrincipal User principal) {
-        com.maxkors.librebnb.security.User user = userRepository.findByUsername(principal.getUsername());
-        return new Profile(user.getUsername());
+    public Profile getProfile(@AuthenticationPrincipal User principal) {
+        com.maxkors.librebnb.security.User user = userService.getUserByUsername(principal.getUsername());
+        return new Profile(user.getUsername(), user.getEmail(), user.getPhoneNumber());
     }
 
-    record Profile(String username) {}
+    record Profile(String username, String email, String phone_number) {}
 }
