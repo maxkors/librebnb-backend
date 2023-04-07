@@ -1,6 +1,8 @@
 package com.maxkors.librebnb.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.maxkors.librebnb.security.User;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -33,6 +35,10 @@ public class Room {
 
     @Column(name = "max_pets")
     private Long max_pets;
+
+    @ManyToMany(mappedBy = "favouriteRooms")
+    @JsonBackReference
+    private List<User> user;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -105,5 +111,21 @@ public class Room {
 
     public void setMax_pets(Long max_pets) {
         this.max_pets = max_pets;
+    }
+
+    public List<User> getUser() {
+        return user;
+    }
+
+    public void setUser(List<User> user) {
+        this.user = user;
+    }
+
+    public List<Media> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<Media> media) {
+        this.media = media;
     }
 }

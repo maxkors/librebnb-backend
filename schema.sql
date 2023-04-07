@@ -106,3 +106,13 @@ values (1, 2),
        (1, 3),
        (2, 4),
        (2, 5);
+
+select r, m
+from app_user u
+         left join favourite f
+                   on u.id = f.app_user_id
+         left join room r
+                   on f.room_id = r.id
+         left join media m
+                   on r.id = m.room_id
+where u.username = 'maximus';

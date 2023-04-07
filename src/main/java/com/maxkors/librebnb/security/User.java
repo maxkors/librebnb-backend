@@ -1,8 +1,10 @@
 package com.maxkors.librebnb.security;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.maxkors.librebnb.domain.Room;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,13 +28,20 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @JsonManagedReference
     @ManyToMany
     @JoinTable(name = "app_user__role",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonManagedReference
     private Set<Role> roles;
 
+
+    @ManyToMany
+    @JoinTable(name = "favourite",
+            joinColumns = @JoinColumn(name = "app_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "room_id"))
+    @JsonManagedReference
+    private List<Room> favouriteRooms;
 
     public String getUsername() {
         return username;
@@ -74,6 +83,14 @@ public class User {
         this.roles = roles;
     }
 
+    public List<Room> getFavouriteRooms() {
+        return favouriteRooms;
+    }
+
+    public void setFavouriteRooms(List<Room> favouriteRooms) {
+        this.favouriteRooms = favouriteRooms;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -83,6 +100,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", roles=" + roles +
+                ", favouriteRooms=" + favouriteRooms +
                 '}';
     }
 }

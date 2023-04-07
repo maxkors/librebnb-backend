@@ -5,6 +5,8 @@ import com.maxkors.librebnb.domain.Room;
 import com.maxkors.librebnb.domain.RoomSearchCriteria;
 import com.maxkors.librebnb.domain.RoomService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,5 +51,11 @@ public class RoomController {
         var roomSearchCriteria = new RoomSearchCriteria(boundingBox, adults, children, pets);
 
         return roomService.getRoomsByCriteria(roomSearchCriteria);
+    }
+
+    @GetMapping("/favouriteRooms")
+    public List<Room> getFavouriteRooms(@AuthenticationPrincipal User principal) {
+        List<Room> favouriteRooms = roomService.getUsersFavouriteRooms(principal.getUsername());
+        return favouriteRooms;
     }
 }

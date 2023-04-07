@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers(HttpMethod.GET, "/rooms").permitAll()
                         .requestMatchers(HttpMethod.GET, "/profile").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/favouriteRooms").authenticated()
                         .requestMatchers("/rooms-all").hasRole(RoleName.ROLE_ADMIN.value())
                         .anyRequest().denyAll())
                 .formLogin(configurer -> configurer

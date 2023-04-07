@@ -26,4 +26,9 @@ public class RoomService {
     public List<Room> getRoomsByCriteria(RoomSearchCriteria roomSearchCriteria) {
         return roomRepository.getByCriteria(roomSearchCriteria);
     }
+
+    @Transactional
+    public List<Room> getUsersFavouriteRooms(String username) {
+        return roomRepository.getUsersFavouriteRooms(username);
+    }
 }
