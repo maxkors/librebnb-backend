@@ -26,6 +26,6 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
         return findAll(roomSpecification);
     }
 
-    @Query(value = "select fr from User u left join fetch u.favouriteRooms fr left join fetch fr.media m where u.username = :username")
+    @Query(value = "select fr from User u left join u.favouriteRooms fr left join fetch fr.media m where u.username = :username")
     List<Room> getUsersFavouriteRooms(@Param("username") String username);
 }
