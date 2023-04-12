@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/rooms")
 public class RoomController {
 
     RoomService roomService;
@@ -24,14 +26,9 @@ public class RoomController {
         this.roomService = roomService;
     }
 
-    @GetMapping("/rooms-all")
-    List<Room> getAllRooms() {
-        return roomService.getAllRooms();
-    }
-
     //TODO:  validation
     //TODO: limit quantity (pagination/SQL)
-    @GetMapping("/rooms")
+    @GetMapping
     List<Room> getRoomsByCriteria(@RequestParam("ne_lat") Double NELat,
                                   @RequestParam("ne_lng") Double NELng,
                                   @RequestParam("sw_lat") Double SWLat,
@@ -53,7 +50,12 @@ public class RoomController {
         return roomService.getRoomsByCriteria(roomSearchCriteria);
     }
 
-    @GetMapping("/favouriteRooms")
+    @GetMapping("/all")
+    List<Room> getAllRooms() {
+        return roomService.getAllRooms();
+    }
+
+    @GetMapping("/favourite")
     public List<Room> getFavouriteRooms(@AuthenticationPrincipal User principal) {
         List<Room> favouriteRooms = roomService.getUsersFavouriteRooms(principal.getUsername());
         return favouriteRooms;

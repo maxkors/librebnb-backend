@@ -28,9 +28,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers(HttpMethod.GET, "/rooms").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/rooms/all").hasRole(RoleName.ROLE_ADMIN.value())
+                        .requestMatchers(HttpMethod.GET, "/rooms/favourite").authenticated()
                         .requestMatchers(HttpMethod.GET, "/profile").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/favouriteRooms").authenticated()
-                        .requestMatchers("/rooms-all").hasRole(RoleName.ROLE_ADMIN.value())
                         .anyRequest().denyAll())
                 .formLogin(configurer -> configurer
                         .permitAll()
