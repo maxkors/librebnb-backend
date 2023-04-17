@@ -1,4 +1,4 @@
-drop table if exists wishlist;
+drop table if exists favourite;
 drop table if exists app_user__role;
 drop table if exists role;
 drop table if exists app_user;

@@ -1,16 +1,12 @@
 package com.maxkors.librebnb.api;
 
-import com.maxkors.librebnb.domain.BoundingBox;
-import com.maxkors.librebnb.domain.Room;
-import com.maxkors.librebnb.domain.RoomSearchCriteria;
-import com.maxkors.librebnb.domain.RoomService;
+import com.maxkors.librebnb.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,9 +17,12 @@ import java.util.Optional;
 public class RoomController {
 
     RoomService roomService;
+    UserService userService;
 
-    public RoomController(RoomService roomService) {
+    @Autowired
+    public RoomController(RoomService roomService, UserService userService) {
         this.roomService = roomService;
+        this.userService = userService;
     }
 
     //TODO:  validation
@@ -59,5 +58,12 @@ public class RoomController {
     public List<Room> getFavouriteRooms(@AuthenticationPrincipal User principal) {
         List<Room> favouriteRooms = roomService.getUsersFavouriteRooms(principal.getUsername());
         return favouriteRooms;
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<String> addRoomToUsersFavourites(@PathVariable("id") Long roomId, @AuthenticationPrincipal User principal) {
+        userService.addRoomToUsersFavourites(principal.getUsername(), roomId);
+
+        return ResponseEntity.ok("Room added to favourites");
     }
 }
