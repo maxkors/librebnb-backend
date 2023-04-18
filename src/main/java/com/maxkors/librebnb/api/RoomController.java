@@ -66,4 +66,11 @@ public class RoomController {
 
         return ResponseEntity.ok("Room added to favourites");
     }
+
+    @DeleteMapping("/{id}/like")
+    public ResponseEntity<String> removeRoomFromUsersFavourites(@PathVariable("id") Long roomId, @AuthenticationPrincipal User principal) {
+        userService.removeRoomFromUsersFavourites(principal.getUsername(), roomId);
+
+        return ResponseEntity.ok("Room removed from favourites");
+    }
 }

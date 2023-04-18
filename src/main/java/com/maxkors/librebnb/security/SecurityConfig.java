@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/rooms").permitAll()
                         .requestMatchers(HttpMethod.GET, "/rooms/all").hasRole(RoleName.ROLE_ADMIN.value())
                         .requestMatchers(HttpMethod.GET, "/rooms/favourite").authenticated()
-                        .requestMatchers(new AntPathRequestMatcher("/rooms/{\\d+}/like", HttpMethod.POST.name())).authenticated()
+                        .requestMatchers(HttpMethod.POST, "/rooms/{id}/like").authenticated()
                         .requestMatchers(HttpMethod.GET, "/profile").authenticated()
                         .anyRequest().denyAll())
                 .formLogin(configurer -> configurer

@@ -31,4 +31,11 @@ public class UserService {
         User user = userRepository.findByUsername(username);
         user.getFavouriteRooms().add(room);
     }
+
+    @Transactional
+    public void removeRoomFromUsersFavourites(String username, Long roomId) {
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("Room not found"));
+        User user = userRepository.findByUsername(username);
+        user.getFavouriteRooms().remove(room);
+    }
 }
