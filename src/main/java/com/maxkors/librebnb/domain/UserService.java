@@ -11,31 +11,14 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RoomRepository roomRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoomRepository roomRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roomRepository = roomRepository;
     }
 
     @Transactional
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
-    }
-
-    @Transactional
-    public void addRoomToUsersFavourites(String username, Long roomId) {
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("Room not found"));
-        // TODO: add Optional and method to UserRepository that don't fetch roles eagerly
-        User user = userRepository.findByUsername(username);
-        user.getFavouriteRooms().add(room);
-    }
-
-    @Transactional
-    public void removeRoomFromUsersFavourites(String username, Long roomId) {
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("Room not found"));
-        User user = userRepository.findByUsername(username);
-        user.getFavouriteRooms().remove(room);
     }
 }

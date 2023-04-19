@@ -49,6 +49,12 @@ public class RoomController {
         return roomService.getRoomsByCriteria(roomSearchCriteria);
     }
 
+    @GetMapping("/{id}")
+    // TODO: replace db id with uuid
+    ResponseEntity<Room> getRoomById(@PathVariable("id") Long id) {
+        return ResponseEntity.of(roomService.getRoomById(id));
+    }
+
     @GetMapping("/all")
     List<Room> getAllRooms() {
         return roomService.getAllRooms();
@@ -62,14 +68,14 @@ public class RoomController {
 
     @PostMapping("/{id}/like")
     public ResponseEntity<String> addRoomToUsersFavourites(@PathVariable("id") Long roomId, @AuthenticationPrincipal User principal) {
-        userService.addRoomToUsersFavourites(principal.getUsername(), roomId);
+        roomService.addRoomToUsersFavourites(principal.getUsername(), roomId);
 
         return ResponseEntity.ok("Room added to favourites");
     }
 
     @DeleteMapping("/{id}/like")
     public ResponseEntity<String> removeRoomFromUsersFavourites(@PathVariable("id") Long roomId, @AuthenticationPrincipal User principal) {
-        userService.removeRoomFromUsersFavourites(principal.getUsername(), roomId);
+        roomService.removeRoomFromUsersFavourites(principal.getUsername(), roomId);
 
         return ResponseEntity.ok("Room removed from favourites");
     }
