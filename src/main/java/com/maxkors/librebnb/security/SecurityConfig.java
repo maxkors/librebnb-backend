@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers(HttpMethod.GET, "/rooms").permitAll()
                         .requestMatchers(HttpMethod.GET, "/rooms/all").hasRole(RoleName.ROLE_ADMIN.value())
-                        .requestMatchers(HttpMethod.GET, "/rooms/favourite").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/rooms/favorite").authenticated()
                         .requestMatchers("/rooms/{id}/like").authenticated()
                         .requestMatchers(HttpMethod.GET, "/profile").authenticated()
                         .anyRequest().denyAll())

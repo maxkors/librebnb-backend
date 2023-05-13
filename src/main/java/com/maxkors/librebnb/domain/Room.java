@@ -6,6 +6,7 @@ import com.maxkors.librebnb.security.User;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Room {
@@ -36,7 +37,7 @@ public class Room {
     @Column(name = "max_pets")
     private Long max_pets;
 
-    @ManyToMany(mappedBy = "favouriteRooms")
+    @ManyToMany(mappedBy = "favoriteRooms")
     @JsonBackReference
     private List<User> user;
 
@@ -136,5 +137,17 @@ public class Room {
 
     public void setMedia(List<Media> media) {
         this.media = media;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Room room)) return false;
+        return Objects.equals(id, room.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

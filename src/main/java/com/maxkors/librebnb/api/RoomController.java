@@ -1,5 +1,6 @@
 package com.maxkors.librebnb.api;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.maxkors.librebnb.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,8 +10,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rooms")
@@ -28,29 +32,41 @@ public class RoomController {
     //TODO:  validation
     //TODO: limit quantity (pagination/SQL)
     @GetMapping
-    List<Room> getRoomsByCriteria(@RequestParam("ne_lat") Double NELat,
-                                  @RequestParam("ne_lng") Double NELng,
-                                  @RequestParam("sw_lat") Double SWLat,
-                                  @RequestParam("sw_lng") Double SWLng,
+    List<FavoriteRoom> getRoomsByCriteria(@AuthenticationPrincipal User principal,
 
-                                  @RequestParam("checkin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkin,
-                                  @RequestParam("checkout") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkout,
+                                          @RequestParam("ne_lat") Double NELat,
+                                          @RequestParam("ne_lng") Double NELng,
+                                          @RequestParam("sw_lat") Double SWLat,
+                                          @RequestParam("sw_lng") Double SWLng,
 
-                                  @RequestParam("adults") Optional<Integer> adults,
-                                  @RequestParam("children") Optional<Integer> children,
-                                  @RequestParam("pets") Optional<Integer> pets,
+                                          @RequestParam("checkin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkin,
+                                          @RequestParam("checkout") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkout,
 
-                                  //TODO: should be enum
-                                  @RequestParam("amenities") Optional<List<String>> amenities) {
+                                          @RequestParam("adults") Optional<Integer> adults,
+                                          @RequestParam("children") Optional<Integer> children,
+                                          @RequestParam("pets") Optional<Integer> pets,
+
+                                          //TODO: should be enum
+                                          @RequestParam("amenities") Optional<List<String>> amenities) {
+        System.out.println(principal);
+
         var boundingBox = new BoundingBox(NELat, NELng, SWLat, SWLng);
         System.out.println(boundingBox);
         var roomSearchCriteria = new RoomSearchCriteria(boundingBox, adults, children, pets);
 
-        return roomService.getRoomsByCriteria(roomSearchCriteria);
+        List<Room> searchedRooms = roomService.getRoomsByCriteria(roomSearchCriteria);
+
+        if (principal == null) {
+            return searchedRooms.stream().map(room -> new FavoriteRoom(room, false)).toList();
+        }
+
+        Set<Room> usersFavoriteRooms = new HashSet<>(roomService.getUsersFavoriteRooms(principal.getUsername()));
+
+        return searchedRooms.stream().map(room -> new FavoriteRoom(room, usersFavoriteRooms.contains(room))).toList();
     }
 
     @GetMapping("/{id}")
-    // TODO: replace db id with uuid
+        // TODO: replace db id with uuid
     ResponseEntity<Room> getRoomById(@PathVariable("id") Long id) {
         return ResponseEntity.of(roomService.getRoomById(id));
     }
@@ -60,23 +76,26 @@ public class RoomController {
         return roomService.getAllRooms();
     }
 
-    @GetMapping("/favourite")
-    public List<Room> getFavouriteRooms(@AuthenticationPrincipal User principal) {
-        List<Room> favouriteRooms = roomService.getUsersFavouriteRooms(principal.getUsername());
-        return favouriteRooms;
+    @GetMapping("/favorite")
+    public List<FavoriteRoom> getFavoriteRooms(@AuthenticationPrincipal User principal) {
+        List<Room> favoriteRooms = roomService.getUsersFavoriteRooms(principal.getUsername());
+        return favoriteRooms.stream().map(room -> new FavoriteRoom(room, true)).toList();
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<String> addRoomToUsersFavourites(@PathVariable("id") Long roomId, @AuthenticationPrincipal User principal) {
-        roomService.addRoomToUsersFavourites(principal.getUsername(), roomId);
+    public ResponseEntity<String> addRoomToUsersFavorites(@PathVariable("id") Long roomId, @AuthenticationPrincipal User principal) {
+        roomService.addRoomToUsersFavorites(principal.getUsername(), roomId);
 
         return ResponseEntity.ok("Room added to favourites");
     }
 
     @DeleteMapping("/{id}/like")
-    public ResponseEntity<String> removeRoomFromUsersFavourites(@PathVariable("id") Long roomId, @AuthenticationPrincipal User principal) {
-        roomService.removeRoomFromUsersFavourites(principal.getUsername(), roomId);
+    public ResponseEntity<String> removeRoomFromUsersFavorites(@PathVariable("id") Long roomId, @AuthenticationPrincipal User principal) {
+        roomService.removeRoomFromUsersFavorites(principal.getUsername(), roomId);
 
-        return ResponseEntity.ok("Room removed from favourites");
+        return ResponseEntity.ok("Room removed from favorites");
+    }
+
+    public record FavoriteRoom(@JsonUnwrapped Room room, boolean isLiked) {
     }
 }

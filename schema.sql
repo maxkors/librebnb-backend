@@ -1,4 +1,4 @@
-drop table if exists favourite;
+drop table if exists favorite;
 drop table if exists app_user__role;
 drop table if exists role;
 drop table if exists app_user;
@@ -49,7 +49,7 @@ create table app_user__role
     primary key (app_user_id, role_id)
 );
 
-create table favourite
+create table favorite
 (
     app_user_id int not null,
     room_id     int not null,
@@ -101,7 +101,7 @@ insert into app_user__role(app_user_id, role_id)
 values (1, 1),
        (2, 2);
 
-insert into favourite (app_user_id, room_id)
+insert into favorite (app_user_id, room_id)
 values (1, 2),
        (1, 3),
        (2, 4),
@@ -109,10 +109,19 @@ values (1, 2),
 
 select r, m
 from app_user u
-         left join favourite f
+         left join favorite f
                    on u.id = f.app_user_id
          left join room r
                    on f.room_id = r.id
          left join media m
                    on r.id = m.room_id
 where u.username = 'maximus';
+
+select r.description, r.max_children, t.username, t.app_user_id, t.room_id
+from room r
+         left join
+     (select u.username, f.app_user_id, f.room_id
+      from app_user u
+               left join favorite f on u.id = f.app_user_id
+      where u.username = 'maximus') t on r.id = t.room_id
+where r.max_children > 0;

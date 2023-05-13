@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class RoomService {
@@ -41,22 +42,22 @@ public class RoomService {
     }
 
     @Transactional
-    public List<Room> getUsersFavouriteRooms(String username) {
+    public List<Room> getUsersFavoriteRooms(String username) {
         return roomRepository.getUsersFavouriteRooms(username);
     }
 
     @Transactional
-    public void addRoomToUsersFavourites(String username, Long roomId) {
+    public void addRoomToUsersFavorites(String username, Long roomId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("Room not found"));
         // TODO: add Optional and method to UserRepository that don't fetch roles eagerly
         User user = userRepository.findByUsername(username);
-        user.getFavouriteRooms().add(room);
+        user.getFavoriteRooms().add(room);
     }
 
     @Transactional
-    public void removeRoomFromUsersFavourites(String username, Long roomId) {
+    public void removeRoomFromUsersFavorites(String username, Long roomId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("Room not found"));
         User user = userRepository.findByUsername(username);
-        user.getFavouriteRooms().remove(room);
+        user.getFavoriteRooms().remove(room);
     }
 }

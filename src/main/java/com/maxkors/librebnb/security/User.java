@@ -37,11 +37,11 @@ public class User {
 
 
     @ManyToMany
-    @JoinTable(name = "favourite",
+    @JoinTable(name = "favorite",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "room_id"))
     @JsonManagedReference
-    private List<Room> favouriteRooms;
+    private List<Room> favoriteRooms;
 
     public String getUsername() {
         return username;
@@ -83,12 +83,12 @@ public class User {
         this.roles = roles;
     }
 
-    public List<Room> getFavouriteRooms() {
-        return favouriteRooms;
+    public List<Room> getFavoriteRooms() {
+        return favoriteRooms;
     }
 
-    public void setFavouriteRooms(List<Room> favouriteRooms) {
-        this.favouriteRooms = favouriteRooms;
+    public void setFavouriteRooms(List<Room> favoriteRooms) {
+        this.favoriteRooms = favoriteRooms;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", roles=" + roles +
-                ", favouriteRooms=" + favouriteRooms +
+                ", favoriteRooms=" + favoriteRooms +
                 '}';
     }
 }
